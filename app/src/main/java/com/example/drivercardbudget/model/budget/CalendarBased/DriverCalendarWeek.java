@@ -16,9 +16,9 @@ import java.util.Map;
 public class DriverCalendarWeek extends TimePeriod {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    DriverCalendarWeek(LocalDateTime startDay){
+    public DriverCalendarWeek(LocalDate startDay){
         setStart(startDay);
-        setEnd(startDay.plusDays(7).toLocalDate(), LocalTime.MAX);
+        setEnd(startDay.plusDays(7), LocalTime.MAX);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

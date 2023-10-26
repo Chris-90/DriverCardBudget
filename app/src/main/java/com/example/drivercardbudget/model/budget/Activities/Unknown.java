@@ -4,7 +4,7 @@ import com.example.drivercardbudget.model.budget.Abstract.ActivityBasedTimePerio
 
 import java.time.LocalDateTime;
 
-public class Unknown extends ActivityBasedTimePeriod {
+public class Unknown extends Activity {
     private static boolean isRest = false;
     private static boolean isWork = false;
 

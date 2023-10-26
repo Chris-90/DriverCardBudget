@@ -39,7 +39,7 @@ public class DriverCalendarDay extends TimePeriod {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    DriverCalendarDay(LocalDate date){
+    public DriverCalendarDay(LocalDate date){
         setStart(LocalDateTime.of(date, LocalTime.MIN));
         setEnd(LocalDateTime.of(date, LocalTime.MAX));
     }

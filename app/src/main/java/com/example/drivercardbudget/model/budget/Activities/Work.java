@@ -4,7 +4,7 @@ import com.example.drivercardbudget.model.budget.Abstract.ActivityBasedTimePerio
 
 import java.time.LocalDateTime;
 
-public class Work extends ActivityBasedTimePeriod {
+public class Work extends Activity {
 
     private int totalValue = 0;
 

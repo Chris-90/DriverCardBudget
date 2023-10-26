@@ -4,7 +4,7 @@ import com.example.drivercardbudget.model.budget.Abstract.ActivityBasedTimePerio
 
 import java.time.LocalDateTime;
 
-public class PeriodOfAvailability extends ActivityBasedTimePeriod {
+public class PeriodOfAvailability extends Activity {
     private boolean isRest = false;
     private boolean isWork = true;
 

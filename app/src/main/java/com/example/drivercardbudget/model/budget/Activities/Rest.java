@@ -4,7 +4,7 @@ import com.example.drivercardbudget.model.budget.Abstract.ActivityBasedTimePerio
 
 import java.time.LocalDateTime;
 
-public class Rest extends ActivityBasedTimePeriod {
+public class Rest extends Activity {
     private boolean isRest = true;
 
     public Rest(LocalDateTime start) {
