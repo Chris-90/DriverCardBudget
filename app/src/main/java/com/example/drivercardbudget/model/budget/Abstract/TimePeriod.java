@@ -16,6 +16,8 @@ public abstract class TimePeriod implements ITimePeriod {
     private LocalDateTime start;
     private LocalDateTime end;
 
+    private boolean isComplete = false;
+
     @Override
     public LocalDateTime getStart() {
         return this.start;
@@ -53,5 +55,11 @@ public abstract class TimePeriod implements ITimePeriod {
         this.end = end;
     }
 
+    public boolean isComplete() {
+        return isComplete;
+    }
 
+    public void setComplete(boolean complete) {
+        isComplete = complete;
+    }
 }

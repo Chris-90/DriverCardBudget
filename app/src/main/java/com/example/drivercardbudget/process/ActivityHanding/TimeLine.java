@@ -1,13 +1,11 @@
 package com.example.drivercardbudget.process.ActivityHanding;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
+import android.annotation.SuppressLint;
 
 import com.example.drivercardbudget.configuration.DefaultDrivingTimeCatalogue;
+import com.example.drivercardbudget.configuration.DefaultWorkTimeConfig;
 import com.example.drivercardbudget.configuration.Interfaces.IDrivingTimeCatalogue;
 import com.example.drivercardbudget.configuration.Interfaces.IWorkingTimeCatalogue;
-import com.example.drivercardbudget.model.budget.Abstract.ActivityBasedTimePeriod;
 import com.example.drivercardbudget.model.budget.Activities.Activity;
 import com.example.drivercardbudget.model.budget.CalendarBased.DriverCalendarDay;
 import com.example.drivercardbudget.model.budget.CalendarBased.DriverCalendarWeek;
@@ -20,6 +18,10 @@ import com.example.drivercardbudget.model.budget.Classifications.DriverWorkingDa
 import com.example.drivercardbudget.model.budget.Classifications.DriverWorkingWeek;
 import com.example.drivercardbudget.model.budget.Classifications.Shift;
 
+/**
+ * Datenhaltungs-Container, keine Verarbeitung
+ * Verarbeitung: ActivityProcessor
+ */
 public class TimeLine {
     private static TimeLine timeLine = null;
     private IDrivingTimeCatalogue selectedDrivingTimeCatalogue;
@@ -38,39 +40,12 @@ public class TimeLine {
 
     private TimeLine(){}
 
-    public TimeLine getInstance(){
-        if(this.timeLine == null){
-            this.timeLine = new TimeLine();
+    public static TimeLine getInstance(Activity activity, DefaultDrivingTimeCatalogue drivingTimeCatalogue, DefaultWorkTimeConfig defaultWorkTimeConfig){
+        if(timeLine == null){
+            timeLine = new TimeLine();
+            timeLine.initiateTimeLine(activity);
         }
-        return this.timeLine;
-    }
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void handleActivity(Activity activity){
-        if(isFirstActivity){
-            handleFirstActivity(activity);
-            isFirstActivity = false;
-        }
-    }
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void handleFirstActivity(Activity activity){
-        this.currentCalendarDay = new DriverCalendarDay(activity.getStart().toLocalDate());
-        this.currentCalendarWeek = new DriverCalendarWeek(activity.getStart().toLocalDate());
-        this.currentDrivingDay = new DriverDrivingDay(activity.getStart());
-        this.currentDrivingWeek = new DriverDrivingWeek(activity.getStart());
-        this.currentDrivingFortnight = new DriverDrivingFortnight(activity.getStart());
-        this.currentWorkingDay = new DriverWorkingDay(activity.getStart());
-        this.currentWorkingWeek = new DriverWorkingWeek(activity.getStart());
-
-        selectDrivingTimeCatalogue();
-        selectWorkingTimeCatalogue();
-    }
-
-    private void selectDrivingTimeCatalogue() {
-        this.selectedDrivingTimeCatalogue = new DefaultDrivingTimeCatalogue();
-    }
-
-    private void selectWorkingTimeCatalogue() {
-
+        return timeLine;
     }
 
     public Shift getCurrentShift() {
@@ -151,5 +126,16 @@ public class TimeLine {
 
     public void setStartedRest(DailyRestingPeriod startedRest) {
         this.startedRest = startedRest;
+    }
+
+    @SuppressLint("NewApi")
+    private void initiateTimeLine(Activity activity){
+        this.currentCalendarDay = new DriverCalendarDay(activity.getStart().toLocalDate());
+        this.currentCalendarWeek = new DriverCalendarWeek(activity.getStart().toLocalDate());
+        this.currentDrivingDay = new DriverDrivingDay(activity.getStart());
+        this.currentDrivingWeek = new DriverDrivingWeek(activity.getStart());
+        this.currentDrivingFortnight = new DriverDrivingFortnight(activity.getStart());
+        this.currentWorkingDay = new DriverWorkingDay(activity.getStart());
+        this.currentWorkingWeek = new DriverWorkingWeek(activity.getStart());
     }
 }
