@@ -1,4 +1,6 @@
 package com.example.drivercardbudget.configuration;
 
-public class DefaultWorkTimeConfig {
+import com.example.drivercardbudget.configuration.Interfaces.IWorkingTimeCatalogue;
+
+public class DefaultWorkTimeConfig implements IWorkingTimeCatalogue {
 }

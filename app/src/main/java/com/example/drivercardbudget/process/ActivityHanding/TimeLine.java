@@ -2,8 +2,6 @@ package com.example.drivercardbudget.process.ActivityHanding;
 
 import android.annotation.SuppressLint;
 
-import com.example.drivercardbudget.configuration.DefaultDrivingTimeCatalogue;
-import com.example.drivercardbudget.configuration.DefaultWorkTimeConfig;
 import com.example.drivercardbudget.configuration.Interfaces.IDrivingTimeCatalogue;
 import com.example.drivercardbudget.configuration.Interfaces.IWorkingTimeCatalogue;
 import com.example.drivercardbudget.model.budget.Activities.Activity;
@@ -16,7 +14,12 @@ import com.example.drivercardbudget.model.budget.Classifications.DriverDrivingFo
 import com.example.drivercardbudget.model.budget.Classifications.DriverDrivingWeek;
 import com.example.drivercardbudget.model.budget.Classifications.DriverWorkingDay;
 import com.example.drivercardbudget.model.budget.Classifications.DriverWorkingWeek;
+import com.example.drivercardbudget.model.budget.Classifications.DrivingPeriod;
 import com.example.drivercardbudget.model.budget.Classifications.Shift;
+import com.example.drivercardbudget.model.budget.Classifications.UninterruptedWork;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Datenhaltungs-Container, keine Verarbeitung
@@ -35,15 +38,23 @@ public class TimeLine {
     private DriverDrivingFortnight currentDrivingFortnight;
     private DriverWorkingDay currentWorkingDay;
     private DriverWorkingWeek currentWorkingWeek;
+    private List<DrivingPeriod> previousDrivingPeriods = new ArrayList<DrivingPeriod>();
+    private DrivingPeriod currentDrivingPeriod;
+    private List<UninterruptedWork> previousUninterruptedWorks = new ArrayList<UninterruptedWork>();
+    private UninterruptedWork currentUninterruptedWork;
+    private int remainingReducedDailyRestingTimes;
+    private int remainingExtendedDrivingTimes;
+    private int requiredDailyRestingTime;
+
     private Break startedBreak;
     private DailyRestingPeriod startedRest;
 
     private TimeLine(){}
 
-    public static TimeLine getInstance(Activity activity, DefaultDrivingTimeCatalogue drivingTimeCatalogue, DefaultWorkTimeConfig defaultWorkTimeConfig){
+    public static TimeLine getInstance(Activity activity, IDrivingTimeCatalogue drivingTimeCatalogue, IWorkingTimeCatalogue defaultWorkTimeConfig){
         if(timeLine == null){
             timeLine = new TimeLine();
-            timeLine.initiateTimeLine(activity);
+            timeLine.initiateTimeLine(activity, drivingTimeCatalogue, defaultWorkTimeConfig);
         }
         return timeLine;
     }
@@ -128,8 +139,64 @@ public class TimeLine {
         this.startedRest = startedRest;
     }
 
+    public int getRemainingReducedDailyRestingTimes() {
+        return remainingReducedDailyRestingTimes;
+    }
+
+    public void setRemainingReducedDailyRestingTimes(int remainingReducedDailyRestingTimes) {
+        this.remainingReducedDailyRestingTimes = remainingReducedDailyRestingTimes;
+    }
+
+    public int getRemainingExtendedDrivingTimes() {
+        return remainingExtendedDrivingTimes;
+    }
+
+    public void setRemainingExtendedDrivingTimes(int remainingExtendedDrivingTimes) {
+        this.remainingExtendedDrivingTimes = remainingExtendedDrivingTimes;
+    }
+
+    public int getRequiredDailyRestingTime() {
+        return requiredDailyRestingTime;
+    }
+
+    public void setRequiredDailyRestingTime(int requiredDailyRestingTime) {
+        this.requiredDailyRestingTime = requiredDailyRestingTime;
+    }
+
+    public DrivingPeriod getCurrentDrivingPeriod() {
+        return currentDrivingPeriod;
+    }
+
+    public void setCurrentDrivingPeriod(DrivingPeriod currentDrivingPeriod) {
+        this.currentDrivingPeriod = currentDrivingPeriod;
+    }
+
+    public List<DrivingPeriod> getPreviousDrivingPeriods() {
+        return previousDrivingPeriods;
+    }
+
+    public void setPreviousDrivingPeriods(List<DrivingPeriod> previousDrivingPeriods) {
+        this.previousDrivingPeriods = previousDrivingPeriods;
+    }
+
+    public List<UninterruptedWork> getPreviousUninterruptedWorks() {
+        return previousUninterruptedWorks;
+    }
+
+    public void setPreviousUninterruptedWorks(List<UninterruptedWork> previousUninterruptedWorks) {
+        this.previousUninterruptedWorks = previousUninterruptedWorks;
+    }
+
+    public UninterruptedWork getCurrentUninterruptedWork() {
+        return currentUninterruptedWork;
+    }
+
+    public void setCurrentUninterruptedWork(UninterruptedWork currentUninterruptedWork) {
+        this.currentUninterruptedWork = currentUninterruptedWork;
+    }
+
     @SuppressLint("NewApi")
-    private void initiateTimeLine(Activity activity){
+    private void initiateTimeLine(Activity activity, IDrivingTimeCatalogue drivingTimeCatalogue, IWorkingTimeCatalogue defaultWorkTimeConfig){
         this.currentCalendarDay = new DriverCalendarDay(activity.getStart().toLocalDate());
         this.currentCalendarWeek = new DriverCalendarWeek(activity.getStart().toLocalDate());
         this.currentDrivingDay = new DriverDrivingDay(activity.getStart());
@@ -137,5 +204,10 @@ public class TimeLine {
         this.currentDrivingFortnight = new DriverDrivingFortnight(activity.getStart());
         this.currentWorkingDay = new DriverWorkingDay(activity.getStart());
         this.currentWorkingWeek = new DriverWorkingWeek(activity.getStart());
+        this.remainingExtendedDrivingTimes = drivingTimeCatalogue.getMaxExtendedDailyDrivingTimes();
+        this.remainingReducedDailyRestingTimes = drivingTimeCatalogue.getMaxReducedDailyRests();
+        this.requiredDailyRestingTime = drivingTimeCatalogue.getReducedDailyRestingTime();
     }
+
+
 }

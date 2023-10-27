@@ -5,7 +5,7 @@ public interface IDrivingTimeCatalogue {
     public int getSplitBreakTime1();
     public int getSplitBreakTime2();
     public int getReducedDailyRestingTime() ;
-    public int getMaxCountReducedDailyRest();
+    public int getMaxReducedDailyRests();
     public int getRegularDailyRestingTime();
     public int getSplitDailyRestingTime1();
     public int getSplitDailyRestingTime2();
@@ -14,6 +14,7 @@ public interface IDrivingTimeCatalogue {
     public int getDrivingTimePeriod();
     public int getRegularDailyDrivingTime();
     public int getExtendedDailyDrivingTime();
+    public int getMaxExtendedDailyDrivingTimes();
     public int getWeeklyDrivingTime();
     public int getFortnightDrivingTime();
 }

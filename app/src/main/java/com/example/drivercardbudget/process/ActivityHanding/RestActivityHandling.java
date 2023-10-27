@@ -2,6 +2,7 @@ package com.example.drivercardbudget.process.ActivityHanding;
 
 import com.example.drivercardbudget.Exceptions.UnexpectedValueException;
 import com.example.drivercardbudget.configuration.DefaultDrivingTimeCatalogue;
+import com.example.drivercardbudget.configuration.Interfaces.IDrivingTimeCatalogue;
 import com.example.drivercardbudget.model.budget.Abstract.ActivityBasedTimePeriod;
 import com.example.drivercardbudget.model.budget.Activities.Activity;
 import com.example.drivercardbudget.model.budget.Classifications.Break;
@@ -14,32 +15,44 @@ public class  RestActivityHandling {
 
     }
 
-    private static void handleBreak(TimeLine timeLine, Activity activity) throws UnexpectedValueException {
-        Break workingBreak;
+    private static void handleBreak(TimeLine timeLine, Activity activity, IDrivingTimeCatalogue drivingTimeCatalogue) throws UnexpectedValueException {
+        Break newBreak;
+        DailyRestingPeriod restingPeriod;
         int value = activity.getTotalValue();
         if(activity.isRest()){
-            // neue reguläre Pause / Ruhe
-            if (timeLine.getStartedBreak() == null) {
-                // Wert > 45 Minuten (kein erster Teil)
-                if (DefaultDrivingTimeCatalogue.REGULAR_BREAK_TIME <= value) {
-                    workingBreak = new Break(activity.getStart());
-                }else if (DefaultDrivingTimeCatalogue.SPLIT_BREAK_TIME_2 <= value) {
-                    // Wert >  15 Minuten (kein erster Teil)
-                    //add erster Teil
-                    workingBreak = new Break(activity.getStart());
-                    workingBreak.setFirstPart(new Break(activity.getStart()));
+            if(timeLine.getRequiredDailyRestingTime() > value){
+                //Check vor 1 Teil geteilte Tagesruhe
+                if(drivingTimeCatalogue.getSplitBreakTime1() < value){
+                    // verarbeite geteilte Tagesruhe
+                    newBreak = new Break(activity.getStart());
+                    restingPeriod = new DailyRestingPeriod(activity.getStart());
+                    restingPeriod.setFirstPart(newBreak);
                 }
-            } else if (timeLine.getStartedBreak() != null
-                    && timeLine.getStartedBreak().getFirstPart() == null) {
-                // erster Teil vorhanden
-                if (timeLine.getStartedBreak().isSplitAvailable()){
+                // Activität ist keine vollwertige Tagesruhe
+                // neue reguläre Pause / Ruhe
+                if (timeLine.getStartedBreak() == null) {
+                    // Wert > 45 Minuten (kein erster Teil)
+                    if (drivingTimeCatalogue.getRegularBreakTime() <= value) {
+                        newBreak = new Break(activity.getStart());
+                    }else if (drivingTimeCatalogue.getSplitBreakTime1() <= value) {
+                        // Wert >  15 Minuten (kein erster Teil)
+                        //add erster Teil
+                        newBreak = new Break(activity.getStart());
+                        newBreak.setFirstPart(new Break(activity.getStart()));
+                    }
+                } else if (timeLine.getStartedBreak() != null
+                        && timeLine.getStartedBreak().getFirstPart() == null) {
+                    // erster Teil vorhanden
+                    if (timeLine.getStartedBreak().isSplitAvailable()){
 
-                } else {
-                    String error = "empty Break?";
-                    throw new UnexpectedValueException(error);
+                    } else {
+                        String error = "empty Break?";
+                        throw new UnexpectedValueException(error);
+                    }
                 }
             }
-        }
+            }
+
     }
 
     private static void handleDailyRest(TimeLine timeLine, DailyRestingPeriod activity){

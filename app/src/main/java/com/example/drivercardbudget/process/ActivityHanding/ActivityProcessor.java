@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 
 import com.example.drivercardbudget.configuration.DefaultDrivingTimeCatalogue;
 import com.example.drivercardbudget.configuration.DefaultWorkTimeConfig;
+import com.example.drivercardbudget.configuration.Interfaces.IWorkingTimeCatalogue;
 import com.example.drivercardbudget.model.budget.Activities.Activity;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class ActivityProcessor {
         return new DefaultDrivingTimeCatalogue();
     }
 
-    private DefaultWorkTimeConfig selectWorkingTimeCatalogue() {
+    private IWorkingTimeCatalogue selectWorkingTimeCatalogue() {
         return new DefaultWorkTimeConfig();
     }
 }

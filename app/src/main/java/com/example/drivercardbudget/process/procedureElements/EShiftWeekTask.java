@@ -1,0 +1,11 @@
+package com.example.drivercardbudget.process.procedureElements;
+
+public enum EShiftWeekTask {
+    START_DRIVING_DAY,
+    STOP_DRIVING_PERIOD,
+    STOP_DRIVING_DAY,
+    DECREASE_EXTENDED_DRIVING_DAY_COUNTER,
+    DECREASE_REDUCED_DAILY_REST,
+    RESET_EXTENDED_DRIVING_DAY_COUNTER,
+    RESET_REDUCED_DAILY_REST;
+}
